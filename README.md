@@ -14,12 +14,22 @@ Traffic is switched between them using a Kubernetes Service.
 
 ---
 
+## ☁️ Infrastructure Setup
+
+* Created an **Amazon EC2 instance (Ubuntu)**
+* Installed **Docker, kubectl, and Minikube**
+* Configured Minikube cluster on EC2
+* Used EC2 as the host machine to run Kubernetes workloads
+
+---
+
 ## 🏗️ Architecture
 
 * AWS EC2 Instance
 * Minikube (Kubernetes cluster)
-* Two Deployments (Blue & Green)
-* One NodePort Service (traffic controller)
+* Blue Deployment (v1)
+* Green Deployment (v2)
+* NodePort Service (traffic controller)
 
 ---
 
@@ -38,9 +48,10 @@ blue-green-deployment/
 ## ⚙️ Prerequisites
 
 * AWS EC2 instance (Ubuntu)
-* Kubernetes (Minikube)
+* Docker installed
+* Minikube installed
 * kubectl installed
-* Git (for version control)
+* Git installed
 
 ---
 
@@ -48,7 +59,7 @@ blue-green-deployment/
 
 ### 1️⃣ Start Minikube
 
-```bash
+```
 minikube start
 ```
 
@@ -56,7 +67,7 @@ minikube start
 
 ### 2️⃣ Deploy Blue & Green Applications
 
-```bash
+```
 kubectl apply -f blue.yaml
 kubectl apply -f green.yaml
 ```
@@ -65,15 +76,15 @@ kubectl apply -f green.yaml
 
 ### 3️⃣ Create Service
 
-```bash
+```
 kubectl apply -f service.yaml
 ```
 
 ---
 
-### 4️⃣ Verify Resources
+### 4️⃣ Verify Deployment
 
-```bash
+```
 kubectl get pods
 kubectl get svc
 kubectl get endpoints
@@ -85,55 +96,69 @@ kubectl get endpoints
 
 ### Get Minikube IP:
 
-```bash
+```
 minikube ip
 ```
 
-### Open in browser:
+### Open in browser (inside EC2):
 
 ```
 http://<minikube-ip>:30007
 ```
 
+### External access (via port-forward):
+
+```
+kubectl port-forward svc/my-service 8080:80 --address 0.0.0.0
+```
+
+Open in browser:
+
+```
+http://<EC2-public-ip>:8080
+```
+
 ---
 
-## 🔄 Blue-Green Switching
+## 🔄 Blue-Green Deployment Switch
 
-### 🔵 To use Blue:
+### 🔵 Blue (Default)
 
-```yaml
+```
 selector:
   app: myapp
   version: blue
 ```
 
-### 🟢 To switch to Green:
+### 🟢 Switch to Green
 
-```yaml
+Update `service.yaml`:
+
+```
 selector:
   app: myapp
   version: green
 ```
 
-Apply changes:
+Apply:
 
-```bash
+```
 kubectl apply -f service.yaml
 ```
 
 ---
 
-## 🔁 Rollback Strategy
+## 🔁 Rollback (Green → Blue)
 
-To revert back to the previous version:
-
-```yaml
-version: blue
+```
+selector:
+  app: myapp
+  version: blue
 ```
 
 Apply again:
 
-```bash
+```
 kubectl apply -f service.yaml
 ```
 
@@ -142,15 +167,16 @@ kubectl apply -f service.yaml
 ## 🎯 Key Features
 
 * Zero downtime deployment
-* Instant rollback capability
-* Traffic switching using Kubernetes Service
-* Scalable and production-ready approach
+* Instant traffic switching
+* Easy rollback capability
+* Runs on cloud infrastructure (AWS EC2)
 
 ---
 
 ## 🧠 Conclusion
 
-This project demonstrates how Kubernetes enables seamless deployment transitions using the Blue-Green strategy, ensuring high availability and reliability.
+This project demonstrates how Kubernetes enables seamless application updates using the Blue-Green deployment strategy.
+By leveraging AWS EC2 and Minikube, the setup simulates a real-world deployment environment.
 
 ---
 
