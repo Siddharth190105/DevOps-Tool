@@ -127,14 +127,22 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 ---
 
-### Step 6 — 📦 Clone the Repository
+### Step 6 — 📦 Create Project Files
+
+Created the required project structure and configuration files for deploying the Spring Boot application on Kubernetes.
+
+Created:
+- ✅ Spring Boot source code
+- ✅ Dockerfile
+- ✅ `pom.xml`
+- ✅ `app-deployment.yaml`
+- ✅ `db-deployment.yaml`
+- ✅ Application configuration files
+
+Moved into the project directory:
 
 ```bash
-yum install git -y
-cd /opt
-git clone https://github.com/SushantOps/SpringBootOnK8S_PS.git
-cd SpringBootOnK8S_PS
-```
+cd /opt/SpringBootOnK8S_PS
 
 ---
 
