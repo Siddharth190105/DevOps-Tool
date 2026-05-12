@@ -50,7 +50,6 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'CI-CD'
                 expression { currentBuild.result == null }
             }
             steps {
